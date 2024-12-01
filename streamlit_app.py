@@ -26,8 +26,9 @@ max_depth_rf=0
 # Show title and description.
 st.title("AutoML for Classification Tasks")
 st.write(
-    "Use the sidebar to upload a dataset, select your settings, and click 'Run' to process your dataset through various machine learning algorithms. Note this application only works for classification tasks."
+    "Use the sidebar to upload a dataset, select your settings, and click 'Run Models' to process your dataset through various machine learning algorithms. Note this application only works for classification tasks."
 )
+st.divider()
 
 with st.sidebar:
     st.header("Configuration")
@@ -110,12 +111,21 @@ if run_models:
         metrics.loc[model,'Recall']=recall_score(y_test,y_pred,average='micro')
         metrics.loc[model,'F1-Score']=f1_score(y_test,y_pred,average='micro')
         cm=ConfusionMatrixDisplay.from_predictions(y_test, y_pred,display_labels=df[target].unique())
-        plt.xlabel('predict')
-        plt.ylabel('truth')
+        plt.xlabel('Predicted')
+        plt.ylabel('Truth')
         plt.title(model)
     my_progress.empty()#remove progress bar
     st.header("Metrics")
     st.table(metrics)
+    with st.expander("See metric definitions"):
+        st.write('''
+            Accuracy: correct predictions/all predictions\n
+            Precision: tp/(tp + fp), where tp is the number of true positives and fp the number of false positives\n
+            Recall: tp/(tp + fn), where  tp is the number of true positives and fn the number of false negatives\n
+            F1-Score: 2*(precision * recall)/(precision + recall), the harmonic mean of precision and recall
+        ''')
     st.header("Confusion Matrices")
-    for i in plt.get_fignums():
-        st.pyplot(plt.figure(i))
+    tabs = st.tabs(selected_models)
+    for index, (label, tab) in enumerate(zip(selected_models, tabs)):
+        with tab:
+            st.pyplot(plt.figure(index+1))
