@@ -1,4 +1,4 @@
-# 📄 Document question answering template
+# AutoML for Classification Tasks
 
 A simple Streamlit app that runs machine learning classification algorithms on a user uploaded dataset.
 
